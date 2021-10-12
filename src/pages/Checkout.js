@@ -7,9 +7,12 @@ import {
   saveUserAddress,
   applyCoupon,
   createCashOrderForUser,
+  placeOrder
 } from "../functions/user";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+// import { PaystackButton } from 'react-paystack';
+import { InterswitchPay } from 'react-interswitch'
 
 const Checkout = ({ history }) => {
   const [products, setProducts] = useState([]);
@@ -17,6 +20,8 @@ const Checkout = ({ history }) => {
   const [address, setAddress] = useState("");
   const [addressSaved, setAddressSaved] = useState(false);
   const [coupon, setCoupon] = useState("");
+
+
   // discount price
   const [totalAfterDiscount, setTotalAfterDiscount] = useState(0);
   const [discountError, setDiscountError] = useState("");
@@ -25,13 +30,15 @@ const Checkout = ({ history }) => {
   const { user, COD } = useSelector((state) => ({ ...state }));
   const couponTrueOrFalse = useSelector((state) => state.coupon);
 
+
   useEffect(() => {
-    getUserCart(user.token).then((res) => {
-      console.log("user cart res", JSON.stringify(res.data, null, 4));
-      setProducts(res.data.products);
-      setTotal(res.data.cartTotal);
+    console.log(process.env)
+    getUserCart(user.token).then(async (res) => {
+      await setProducts(res.data.products);
+      await setTotal(res.data.cartTotal);
     });
   }, []);
+
 
   const emptyCart = () => {
     // remove from local storage
@@ -49,7 +56,7 @@ const Checkout = ({ history }) => {
       setTotal(0);
       setTotalAfterDiscount(0);
       setCoupon("");
-      toast.success("Cart is emapty. Contniue shopping.");
+      toast.success("Cart is empty. Contniue shopping.");
     });
   };
 
@@ -64,7 +71,6 @@ const Checkout = ({ history }) => {
   };
 
   const applyDiscountCoupon = () => {
-    console.log("send coupon to backend", coupon);
     applyCoupon(user.token, coupon).then((res) => {
       console.log("RES ON COUPON APPLIED", res.data);
       if (res.data) {
@@ -155,6 +161,17 @@ const Checkout = ({ history }) => {
     });
   };
 
+
+  const paymentCallback = (txnData) => {
+    if (txnData.resp === "00") {
+      placeOrder(user.token, txnData.txnref, couponTrueOrFalse).then(res => {
+        toast.success("Your payment was successful")
+      }).catch(err => toast.success(`Error: ${err.message} `))
+    } else {
+      toast.error(`Transaction Failed: ${txnData.desc}`)
+    }
+  }
+
   return (
     <div className="row">
       <div className="col-md-6">
@@ -196,13 +213,18 @@ const Checkout = ({ history }) => {
                 Place Order
               </button>
             ) : (
-              <button
-                className="btn btn-primary"
-                disabled={!addressSaved || !products.length}
-                onClick={() => history.push("/payment")}
-              >
-                Place Order
-              </button>
+              <InterswitchPay className="btn btn-success px-5"
+                publicKey={process.env.REACT_APP_QUICKTELLER_PUBLIC_KEY}
+                payItemID={process.env.REACT_APP_QUICKTELLER_PAY_ITEM_ID}
+                merchantCode={process.env.REACT_APP_QUICKTELLER_MERCHANT_CODE}
+                redirectURL={process.env.REACT_APP_QUICKTELLER_REDIRECT_URL}
+                customerEmail={user.email}
+                mode={process.env.NODE_ENV === "development" ? 'TEST' : 'LIVE'}
+                callback={paymentCallback}
+                text="Pay Now"
+                amount={(parseInt(total) * 100).toString()}
+                transactionReference={'WFN' + (new Date()).getTime().toString()}
+              />
             )}
           </div>
 
@@ -213,11 +235,11 @@ const Checkout = ({ history }) => {
               className="btn btn-primary"
             >
               Empty Cart
-            </button>
+            </button>reference
           </div>
         </div>
       </div>
-    </div>
+    </div >
   );
 };
 

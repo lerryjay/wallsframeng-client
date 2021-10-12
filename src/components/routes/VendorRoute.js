@@ -6,23 +6,7 @@ import { currentVendor } from "../../functions/auth";
 
 const VendorRoute = ({ children, ...rest }) => {
   const { user } = useSelector((state) => ({ ...state }));
-  const [ok, setOk] = useState(false);
-
-  useEffect(() => {
-    if (user && user.token) {
-      currentVendor(user.token)
-        .then((res) => {
-          console.log("CURRENT VENDOR RES", res);
-          setOk(true);
-        })
-        .catch((err) => {
-          console.log("VENODR ROUTE ERR", err);
-          setOk(false);
-        });
-    }
-  }, [user]);
-
-  return ok ? <Route {...rest} /> : <LoadingToRedirect />;
+  return user && user.token && user.role === "vendor" ? <Route {...rest} /> : <LoadingToRedirect />;
 };
 
 export default VendorRoute;

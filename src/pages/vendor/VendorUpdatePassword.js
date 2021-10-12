@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import UserNav from "../../components/nav/UserNav";
 import { auth } from "../../firebase";
 import { toast } from "react-toastify";
+import VendorNav from "../../components/nav/VendorNav";
 
-const Password = () => {
+const VendorUpdatePassword = () => {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -50,7 +50,7 @@ const Password = () => {
   return (
     <>
       <div className="container-fluid p-4">
-        <UserNav />
+        <VendorNav />
       </div>
       <div className="container-fluid">
         <div className="row">
@@ -68,4 +68,4 @@ const Password = () => {
   );
 };
 
-export default Password;
+export default VendorUpdatePassword;

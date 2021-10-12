@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
-import AdminNav from "../../components/nav/AdminNav";
-import { getOrders, updateOrderStatus } from "../../functions/admin";
+import VendorNav from "../../components/nav/VendorNav";
+
 import { useSelector, useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import { Spin } from "antd";
 import Orders from "../../components/order/Orders";
+import { getOrders, updateOrderStatus } from '../../functions/vendor'
 
 
-const AdminDashboard = () => {
+const VendorDashboard = () => {
   const [orders, setOrders] = useState([]);
   const { user } = useSelector((state) => ({ ...state }));
 
@@ -17,12 +18,11 @@ const AdminDashboard = () => {
 
   const loadOrders = () =>
     getOrders(user.token).then((res) => {
-      console.log(JSON.stringify(res.data, null, 4));
       setOrders(res.data);
     });
 
   const handleStatusChange = (orderId, orderStatus) => {
-    updateOrderStatus(orderId, orderStatus, user.token).then((res) => {
+    updateOrderStatus(user.token, orderId, orderStatus,).then((res) => {
       toast.success("Status updated");
       loadOrders();
     });
@@ -31,16 +31,14 @@ const AdminDashboard = () => {
   return (
     <>
       <div className="container-fluid p-4">
-        <AdminNav />
+        <VendorNav />
       </div>
 
       <div className="container">
         <div className="row">
           <div className="col-sm-10">
             <h4>Orders</h4>
-
             <Orders orders={orders} handleStatusChange={handleStatusChange} />
-
           </div>
         </div>
       </div>
@@ -48,4 +46,4 @@ const AdminDashboard = () => {
   );
 };
 
-export default AdminDashboard;
+export default VendorDashboard;

@@ -36,3 +36,29 @@ export const currentAdmin = async (authtoken) => {
     }
   );
 };
+
+export const registerUser = async (authtoken, fullname, telephone) => {
+  return await axios.post(`${process.env.REACT_APP_API}/user/register`,
+    {
+      fullname, telephone
+    },
+    {
+      headers: {
+        authtoken,
+      },
+    }
+  );
+}
+
+export const registerVendor = async (authtoken, storename, telephone) => {
+  return await axios.post(`${process.env.REACT_APP_API}/vendor/register`,
+    {
+      storename, telephone
+    },
+    {
+      headers: {
+        authtoken,
+      },
+    }
+  );
+}

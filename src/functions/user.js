@@ -26,7 +26,7 @@ export const emptyUserCart = async (authtoken) =>
   });
 
 export const saveUserAddress = async (authtoken, address) =>
-  await axios.post(
+  await axios.patch(
     `${process.env.REACT_APP_API}/user/address`,
     { address },
     {
@@ -37,7 +37,7 @@ export const saveUserAddress = async (authtoken, address) =>
   );
 
 export const applyCoupon = async (authtoken, coupon) =>
-  await axios.post(
+  await axios.patch(
     `${process.env.REACT_APP_API}/user/cart/coupon`,
     { coupon },
     {
@@ -73,7 +73,7 @@ export const getWishlist = async (authtoken) =>
   });
 
 export const removeWishlist = async (productId, authtoken) =>
-  await axios.put(
+  await axios.delete(
     `${process.env.REACT_APP_API}/user/wishlist/${productId}`,
     {},
     {
@@ -93,6 +93,17 @@ export const addToWishlist = async (productId, authtoken) =>
       },
     }
   );
+
+
+export const placeOrder = async (authtoken, txnref, couponApplied) => await axios.post(
+  `${process.env.REACT_APP_API}/user/order`,
+  { couponApplied, txnref },
+  {
+    headers: {
+      authtoken,
+    },
+  }
+);
 
 
 export const createCashOrderForUser = async (

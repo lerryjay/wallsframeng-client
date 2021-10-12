@@ -34,10 +34,10 @@ export const getProducts = async (sort, order, page) =>
     page,
   });
 
-  export const getProductsCount = async () =>
+export const getProductsCount = async () =>
   await axios.get(`${process.env.REACT_APP_API}/products/total`);
 
-  export const productStar = async (productId, star, authtoken) =>
+export const productStar = async (productId, star, authtoken) =>
   await axios.put(
     `${process.env.REACT_APP_API}/product/star/${productId}`,
     { star },
@@ -49,7 +49,10 @@ export const getProducts = async (sort, order, page) =>
   );
 
 export const getRelated = async (productId) =>
-await axios.get(`${process.env.REACT_APP_API}/product/related/${productId}`);
+  await axios.get(`${process.env.REACT_APP_API}/product/related/${productId}&`);
 
-export const fetchProductsByFilter = async (arg) =>
-  await axios.post(`${process.env.REACT_APP_API}/search/filters`, arg);
+export const fetchProductsByFilter = async (arg) => {
+  let filters = '';
+  Object.keys(arg).map(key => filters += `${key}=${arg.key}`)
+  await axios.get(`${process.env.REACT_APP_API}/product/search?${filters}`);
+}

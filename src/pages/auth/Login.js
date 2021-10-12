@@ -23,6 +23,8 @@ const Login = ({ history }) => {
   const roleBasedRedirect = (res) => {
     if (res.data.role === "admin") {
       history.push("/admin/dashboard");
+    } else if (res.data.role === "vendor") {
+      history.push("/vendor/dashboard");
     } else {
       history.push("/user/dashboard");
     }
@@ -34,7 +36,6 @@ const Login = ({ history }) => {
     // console.table(email, password);
     try {
       const result = await auth.signInWithEmailAndPassword(email, password);
-      // console.log(result);
       const { user } = result;
       const idTokenResult = await user.getIdTokenResult();
 
@@ -94,7 +95,7 @@ const Login = ({ history }) => {
   const loginForm = () => (
     <form onSubmit={handleSubmit}>
       <div className="form-group mb-4">
-      <label>Email Address</label>
+        <label>Email Address</label>
         <input
           type="email"
           className="form-control"
@@ -106,7 +107,7 @@ const Login = ({ history }) => {
       </div>
 
       <div className="form-group mb-4">
-      <label>Password</label>
+        <label>Password</label>
         <input
           type="password"
           className="form-control"
@@ -117,13 +118,13 @@ const Login = ({ history }) => {
       </div>
 
       <div className="text-center">
-      <button
-        onClick={handleSubmit}
-        className="mb-3 btn btn-lg w-btn login-btn"
-        disabled={!email || password.length < 6}
-      >
-        Login 
-      </button>
+        <button
+          onClick={handleSubmit}
+          className="mb-3 btn btn-lg w-btn login-btn"
+          disabled={!email || password.length < 6}
+        >
+          Login
+        </button>
       </div>
     </form>
   );
@@ -132,37 +133,37 @@ const Login = ({ history }) => {
     <div className="container mt-5">
       <div className="row">
         <div className="col-md-8 mb-4">
-          <img src="../../assets/images/06.png"  alt="Login"/>
+          <img src="../../assets/images/06.png" alt="Login" />
         </div>
 
         <div className="col-xl-4 mb-4">
-        <div className="text-end">
-        {loading ? (
-          <Spin size="large" />
-          ) : (
-            <span><h4>Login</h4><p>Dont have an account? <Link to="/register">Register</Link></p></span>
-           
-          )}
-         
+          <div className="text-end">
+            {loading ? (
+              <Spin size="large" />
+            ) : (
+              <span><h4>Login</h4><p>Dont have an account? <Link to="/register">Register</Link></p></span>
+
+            )}
+
           </div>
           <div className="auth-bg my-padding ">
-          {loginForm()}
-          
-          <div className="text-center">
-          
-          <button
-            onClick={googleLogin}
-            className="mb-3 btn btn-lg google-btn"
-          >
-           {/* <span><i className="fas fa-envelope"></i></span> */}
-           <span className="text-end p-2">Login with <span className="g1">G</span><span className="g2">o</span><span className="g3">o</span><span className="g4">g</span><span className="g5">l</span><span className="g6">e</span></span>
-          </button>
+            {loginForm()}
+
+            <div className="text-center">
+
+              <button
+                onClick={googleLogin}
+                className="mb-3 btn btn-lg google-btn"
+              >
+                {/* <span><i className="fas fa-envelope"></i></span> */}
+                <span className="text-end p-2">Login with <span className="g1">G</span><span className="g2">o</span><span className="g3">o</span><span className="g4">g</span><span className="g5">l</span><span className="g6">e</span></span>
+              </button>
+            </div>
+            <Link to="/forgot/password" className="float-right text-dark fw-bold">
+              Forgot Password?
+            </Link>
           </div>
-          <Link to="/forgot/password" className="float-right text-dark fw-bold">
-            Forgot Password?
-          </Link>
-          </div>
-         
+
 
         </div>
 

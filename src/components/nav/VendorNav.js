@@ -21,14 +21,6 @@ const VendorNav = () => {
             Orders
           </Link>
         </li>
-        {/* <li className="nav-item">
-      <Link 
-      className={`nav-link ${active === "/admin/product" && "active"}`} 
-      to="/admin/product" 
-      >
-        Add Products
-      </Link>
-    </li> */}
 
         <li className="nav-item">
           <Link
@@ -38,47 +30,10 @@ const VendorNav = () => {
           </Link>
         </li>
 
-        <li className="nav-item">
-          <Link
-            className={`nav-link ${active === "/vendor/category" && "active"}`}
-            to="/vendor/category"
-          >
-            Category
-          </Link>
-        </li>
-
-        <li className="nav-item">
-
-          <Link
-            className={`nav-link ${active === "/vendor/sub" && "active"}`}
-            to="/vendor/sub"
-          >
-            Sub Category
-          </Link>
-        </li>
-
-        {/* <li className="nav-item">
-      <Link 
-      className={`nav-link ${active === "/admin/coupon" && "active"}`}
-      to="/admin/coupon" 
-      >
-        Coupon
-      </Link>
-    </li> */}
-
-        {/* <li className="nav-item">
-      <Link 
-      className={`nav-link ${active === "/admin/vendor" && "active"}`}
-      to="/admin/vendor" 
-      >
-       Vendor
-      </Link>
-    </li> */}
-
         <li>
           <Link
-            className={`nav-link ${active === "/user/password" && "active"}`}
-            to="/user/password">
+            className={`nav-link ${active === "/vendor/password" && "active"}`}
+            to="/vendor/update-password">
             Password
           </Link>
         </li>

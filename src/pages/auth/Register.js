@@ -2,11 +2,16 @@
 import React, { useState, useEffect } from "react";
 import { auth } from "../../firebase";
 import { toast } from "react-toastify";
-import { useSelector } from "react-redux";
-import {Link} from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import { registerUser } from "../../functions/auth";
 
 const Register = ({ history }) => {
+  const [fullname, setFullName] = useState("");
+  const [telephone, setTelephone] = useState("");
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  let dispatch = useDispatch();
 
   const { user } = useSelector((state) => ({ ...state }));
 
@@ -16,40 +21,105 @@ const Register = ({ history }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // console.log("ENV --->", process.env.REACT_APP_REGISTER_REDIRECT_URL);
-    const config = {
-      url: process.env.REACT_APP_REGISTER_REDIRECT_URL,
-      handleCodeInApp: true,
-    };
 
-    await auth.sendSignInLinkToEmail(email, config);
-    toast.success(
-      `Email is sent to ${email}. Click the link to complete your registration.`
-    );
-    // save user email in local storage
-    window.localStorage.setItem("emailForRegistration", email);
-    // clear state
-    setEmail("");
+    if (!password || !fullname || !telephone || !email) {
+      toast.error("All fields are required");
+      return;
+    }
+
+    if (password.length < 6) {
+      toast.error("Password must be at least 6 characters long");
+      return;
+    }
+
+    await auth.createUserWithEmailAndPassword(email, password)
+      .then(async (userCredential) => {
+        // Signed in 
+        const user = userCredential.user;
+        const authcred = await user.getIdTokenResult();
+
+        registerUser(authcred.token, fullname, telephone).then(res => {
+
+          toast.success('Registration successful!');
+          dispatch({
+            type: "LOGGED_IN_USER",
+            payload: {
+              name: fullname,
+              email,
+              token: authcred.token,
+              role: res.data.role,
+              _id: res.data._id,
+            },
+          });
+          setFullName("");
+          setTelephone("");
+          setEmail("");
+          setPassword("");
+          history.push("/");
+        })
+      })
+      .catch((error) => {
+        const errorMessage = error.message;
+        toast.error(`${errorMessage}`);
+      });
+
   };
 
   const registerForm = () => (
     <form onSubmit={handleSubmit}>
-    <label className="mb-3">Enter Email Address</label>
-      <input
-        type="email"
-        className="form-control"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        placeholder="Your email"
-        autoFocus
-      />
+      <div className="form-group mb-3">
+        <label className="">Full Name</label>
+        <input
+          type="text"
+          className="form-control"
+          value={fullname}
+          onChange={(e) => setFullName(e.target.value)}
+          placeholder=""
+          autoFocus
+          required
+        />
+      </div>
+      <div className="form-group mb-3">
+        <label>Telephone</label>
+        <input
+          type="tel"
+          className="form-control"
+          value={telephone}
+          onChange={(e) => setTelephone(e.target.value)}
+          placeholder=""
+          required
+        />
+      </div>
+      <div className="form-group mb-3">
+        <label>Email</label>
+        <input
+          type="email"
+          className="form-control"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder=""
+          required
+        />
+      </div>
+      <div className="form-group mb-3">
+        <label>Password</label>
+        <input
+          type="password"
+          className="form-control"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder=""
+          required
+        />
+      </div>
+
       <br />
       <button type="submit" className="btn btn-raised btn-lg w-bold text-signup">
         Register
       </button>
       <br />
-      <p className="text-dark mt-5 mb-5">Already Sign Up? <Link className="text-btn fw-bold"to="/login">Login here</Link></p>
-    </form>
+      <p className="text-dark mt-5 mb-5">Already have an account ? <Link className="ml-3" to=" /login">Login here</Link></p>
+    </form >
   );
 
   return (
@@ -63,11 +133,11 @@ const Register = ({ history }) => {
 
 
         <div className="col-xl-4 mb-4">
-        <div className="text-end">
-          <span><h4>Register in one click!</h4></span>
+          <div className="text-end">
+            <span><h4>Register in one click!</h4></span>
           </div>
           <div className=" my-padding">
-          {registerForm()}
+            {registerForm()}
           </div>
 
         </div>

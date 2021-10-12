@@ -7,7 +7,6 @@ import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import Home from "./pages/Home";
 import Header from "./components/nav/Header";
-import RegisterComplete from "./pages/auth/RegisterComplete";
 import ForgotPassword from "./pages/auth/ForgotPassword";
 import Dashboard from "./pages/user/Dashboard";
 import UserRoute from "./components/routes/UserRoute";
@@ -36,6 +35,13 @@ import Payment from "./pages/Payment";
 import { auth } from "./firebase";
 import { useDispatch } from "react-redux";
 import { currentUser } from "./functions/auth";
+import VendorRegister from "./pages/auth/VendorRegister";
+import VendorDashboard from "./pages/vendor/VendorDashbaord";
+import VendorAllProducts from "./pages/vendor/product/VendorAllProducts";
+import VendorAddProduct from "./pages/vendor/product/VendorAddProduct";
+import VendorRoute from "./components/routes/VendorRoute";
+import VendorUpdatePassword from "./pages/vendor/VendorUpdatePassword";
+import Vendors from "./pages/admin/vendor/Vendors";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -75,11 +81,18 @@ const App = () => {
         <Route exact path="/" component={Home} />
         <Route exact path="/login" component={Login} />
         <Route exact path="/register" component={Register} />
-        <Route exact path="/register/complete" component={RegisterComplete} />
+        <Route exact path="/register" component={Register} />
         <Route exact path="/forgot/password" component={ForgotPassword} />
         <UserRoute exact path="/user/dashboard" component={Dashboard} />
         <UserRoute exact path="/user/password" component={Password} />
         <UserRoute exact path="/user/wishlist" component={Wishlist} />
+
+        <Route exact path="/vendor/register" component={VendorRegister} />
+        <VendorRoute exact path="/vendor/dashboard" component={VendorDashboard} />
+        <VendorRoute exact path="/vendor/products" component={VendorAllProducts} />
+        <VendorRoute exact path="/vendor/product/add" component={VendorAddProduct} />
+        <VendorRoute exact path="/vendor/update-password" component={VendorUpdatePassword} />
+
         <AdminRoute exact path="/admin/dashboard" component={AdminDashboard} />
         <AdminRoute exact path="/admin/category" component={CategoryCreate} />
         <AdminRoute
@@ -96,6 +109,10 @@ const App = () => {
           path="/admin/product/:slug"
           component={ProductUpdate}
         />
+
+        <AdminRoute exact path="/admin/vendors" component={Vendors} />
+        {/* <AdminRoute exact path="/admin/users" component={AllProducts} /> */}
+
         <Route exact path="/product/:slug" component={Product} />
         <Route exact path="/category/:slug" component={CategoryHome} />
         <Route exact path="/sub/:slug" component={SubHome} />
@@ -106,7 +123,7 @@ const App = () => {
         <UserRoute exact path="/payment" component={Payment} />
       </Switch>
       <Footer />
-      
+
     </>
   );
 };
